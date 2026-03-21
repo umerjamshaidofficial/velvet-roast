@@ -26,9 +26,12 @@ app.use(
   })
 );
 
-// UPDATED: Explicitly allowed PATCH for visibility toggles and added OPTIONS
+// UPDATED: CORS to support both Local and Production (Vercel)
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: [
+    'http://localhost:5173', 
+    'https://velvet-roast.vercel.app' // Replace with your actual Vercel URL once deployed
+  ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -49,6 +52,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/rituals', ritualRoutes);
 
 // --- DATABASE CONNECTION TEST ---
+// This will now use the connectionString + SSL logic from your updated db.js
 if (db) {
   db.query('SELECT NOW()')
     .then(() => {
@@ -63,11 +67,15 @@ app.get('/', (req, res) => {
   res.send('☕ Velvet Roast API is running...');
 });
 
+// --- GLOBAL ERROR HANDLER ---
 app.use((err, req, res, next) => {
   console.error('🔥 Server Error:', err.stack);
-  res.status(500).json({ error: 'Internal Server Error' });
+  res.status(500).json({ 
+    error: 'Internal Server Error',
+    message: process.env.NODE_ENV === 'development' ? err.message : undefined 
+  });
 });
 
 app.listen(port, () => {
-  console.log(`🚀 Server spinning on http://localhost:${port}`);
+  console.log(`🚀 Server spinning on port: ${port}`);
 });
