@@ -3,6 +3,9 @@ import { useAuth } from './AuthContext';
 
 const CartContext = createContext();
 
+// Use Environment Variable for the API URL
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 export const CartProvider = ({ children }) => {
   const auth = useAuth();
   const isMember = auth?.isMember || false; 
@@ -22,7 +25,7 @@ export const CartProvider = ({ children }) => {
     localStorage.setItem('velvet_cart', JSON.stringify(cart));
   }, [cart]);
 
-  // Stable gift fetching logic to prevent re-render loops
+  // Stable gift fetching logic using the dynamic BASE_URL
   const fetchGiftCount = useCallback(async () => {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -30,7 +33,7 @@ export const CartProvider = ({ children }) => {
         return;
     }
     try {
-      const response = await fetch('http://localhost:5000/api/orders/received/count', {
+      const response = await fetch(`${BASE_URL}/api/orders/received/count`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (response.ok) {
