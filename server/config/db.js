@@ -1,12 +1,13 @@
 const { Pool } = require('pg');
 require('dotenv').config();
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 const pool = new Pool({
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  database: process.env.DB_DATABASE,
+  // Use the full URL if available (Render), otherwise fallback to local pieces
+  connectionString: process.env.DATABASE_URL,
+  // SSL is mandatory for Render's hosted database
+  ssl: isProduction ? { rejectUnauthorized: false } : false
 });
 
 pool.on('connect', () => {
@@ -18,8 +19,7 @@ pool.on('error', (err) => {
   process.exit(-1);
 });
 
-// Exporting both the pool and a helper query function
 module.exports = {
   query: (text, params) => pool.query(text, params),
-  pool // Exporting the pool directly for controllers to use
+  pool 
 };
