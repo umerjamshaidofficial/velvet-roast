@@ -1,4 +1,6 @@
-const API_URL = 'http://localhost:5000/api/orders';
+import { BASE_URL } from './config'; // Centralized source for sanctuary server URL
+
+const API_URL = `${BASE_URL}/api/orders`;
 
 /**
  * Fetches the history of rituals for the authenticated user.

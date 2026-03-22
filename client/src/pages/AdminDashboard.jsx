@@ -4,10 +4,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Users, ShoppingBag, DollarSign, Package, 
   Clock, RefreshCcw, Menu, PlusCircle, 
-  List, Gift, LayoutDashboard, LogOut, X,
+  List, Gift, LayoutDashboard, X,
   CheckCircle
 } from 'lucide-react';
 import AdminGiftTrack from './AdminGiftTrack';
+import { BASE_URL } from '../api/config'; // Centralized source for sanctuary server URL
 
 const OverviewStats = ({ stats }) => {
   const navigate = useNavigate();
@@ -98,7 +99,8 @@ const AdminDashboard = ({ children }) => {
   const fetchDashboardData = async () => {
     const token = localStorage.getItem('token');
     try {
-      const response = await fetch('http://localhost:5000/api/admin/overview', {
+      // Updated to use dynamic BASE_URL
+      const response = await fetch(`${BASE_URL}/api/admin/overview`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await response.json();
@@ -119,7 +121,8 @@ const AdminDashboard = ({ children }) => {
   const handleStatusChange = async (orderId, newStatus) => {
     const token = localStorage.getItem('token');
     try {
-      const response = await fetch(`http://localhost:5000/api/admin/orders/${orderId}/status`, {
+      // Updated to use dynamic BASE_URL
+      const response = await fetch(`${BASE_URL}/api/admin/orders/${orderId}/status`, {
         method: 'PUT',
         headers: { 
           'Authorization': `Bearer ${token}`,

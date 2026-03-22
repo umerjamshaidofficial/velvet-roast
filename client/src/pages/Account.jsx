@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { MapPin, Crown, Settings, LogOut } from 'lucide-react'; // Added LogOut icon
+import { MapPin, Crown, Settings, LogOut } from 'lucide-react'; 
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom'; // Added for redirection
+import { useNavigate } from 'react-router-dom';
+import { BASE_URL } from '../api/config'; // Centralized source for sanctuary server URL
 
 import DestinationSection from '../components/DestinationSection';
 import ExecutiveSection from '../components/ExecutiveSection';
@@ -11,8 +12,8 @@ import PreferenceSection from '../components/PreferenceSection';
 const Account = () => {
   const navigate = useNavigate();
   const { isMember, showToast } = useCart();
-  const { user, updateUser, logout } = useAuth(); // Added logout from AuthContext
-  const [activeTab, setActiveTab] = useState('destinations'); // Set to destinations since identity is removed
+  const { user, updateUser, logout } = useAuth(); 
+  const [activeTab, setActiveTab] = useState('destinations'); 
   const [loading, setLoading] = useState(false);
 
   const [profile, setProfile] = useState({
@@ -31,12 +32,13 @@ const Account = () => {
     const token = localStorage.getItem('token');
     
     if (!token) {
-      console.warn("Authorization token missing.");
+      console.warn("Authorization token missing from sanctuary storage.");
       return;
     }
 
     try {
-      const response = await fetch('http://localhost:5000/api/profile/me', {
+      // Updated to use dynamic BASE_URL
+      const response = await fetch(`${BASE_URL}/api/profile/me`, {
         headers: { 
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -86,7 +88,6 @@ const Account = () => {
     }
   }, [user]);
 
-  // Updated menuItems: Removed Identity and added Logout at the bottom
   const menuItems = [
     { id: 'destinations', label: 'Destinations', icon: <MapPin size={18} /> },
     { id: 'executive', label: 'Executive Status', icon: <Crown size={18} /> },

@@ -18,7 +18,7 @@ const Toast = ({ message, isVisible, type }) => {
               : 'bg-white dark:bg-velvet-bean border-[#3E2723]/10 dark:border-velvet-oxblood/30 text-[#3E2723] dark:text-white'
           }`}
         >
-          {/* Gold Shimmer Effect for Gifts */}
+          {/* Gold Shimmer Effect for Gifts - Logic fully preserved */}
           {isGift && <div className="absolute inset-0 gift-toast-shimmer pointer-events-none" />}
 
           <div className={`${isGift ? 'bg-[#D4AF37]/20' : 'bg-[#D4AF37] dark:bg-velvet-oxblood'} p-1.5 rounded-full shadow-inner relative z-10`}>

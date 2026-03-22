@@ -16,6 +16,7 @@ const MemberBadge = ({ variant = "default" }) => {
         ${isLarge ? 'px-6 py-3 rounded-2xl text-[10px]' : 'px-3 py-1 rounded-full text-[7px]'}
       `}
     >
+      {/* Shine Effect Overlay */}
       <motion.div
         animate={{ 
           x: ['-100%', '200%'],
@@ -26,10 +27,15 @@ const MemberBadge = ({ variant = "default" }) => {
           ease: "linear",
           repeatDelay: 2
         }}
-        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent w-1/2 -skew-x-12"
+        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent w-1/2 -skew-x-12 pointer-events-none"
       />
 
-      {isLarge ? <Crown size={14} /> : <Sparkles size={10} />}
+      {/* Icon selection based on variant */}
+      {isLarge ? (
+        <Crown size={14} className="relative z-10" />
+      ) : (
+        <Sparkles size={10} className="relative z-10" />
+      )}
       
       <span className="relative z-10">
         Executive

@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, Coffee, Gift, Heart, Calendar } from 'lucide-react';
-import { fetchReceivedGifts, claimGift } from '../api/orderService'; // Ensure these are exported
+import { fetchReceivedGifts, claimGift } from '../api/orderService';
+import { BASE_URL } from '../api/config'; // Centralized source for sanctuary server URL
 
 const ClaimRitual = () => {
   const [rituals, setRituals] = useState([]);
@@ -80,7 +81,8 @@ const ClaimRitual = () => {
                   <div className="flex items-center gap-6">
                     <div className="relative">
                         <img 
-                          src={ritual.sender_photo || 'https://via.placeholder.com/150'} 
+                          // Updated to use dynamic BASE_URL for sender photos
+                          src={ritual.sender_photo ? `${BASE_URL}/uploads/${ritual.sender_photo}` : 'https://via.placeholder.com/150'} 
                           className="w-16 h-16 rounded-2xl object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
                           alt={ritual.sender_name}
                         />

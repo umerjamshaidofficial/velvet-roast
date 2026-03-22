@@ -3,13 +3,13 @@ import { motion } from 'framer-motion';
 import { 
   Upload, 
   Plus, 
-  Info, 
   Eye, 
   Lock, 
   DollarSign, 
   Coffee,
   CheckCircle2
 } from 'lucide-react';
+import { BASE_URL } from '../api/config'; // Centralized source for sanctuary server URL
 
 const AddRitual = () => {
   const [loading, setLoading] = useState(false);
@@ -46,17 +46,20 @@ const AddRitual = () => {
     data.append('image', formData.image);
 
     try {
-      const response = await fetch('http://localhost:5000/api/admin/rituals/add', {
+      // Updated to use dynamic BASE_URL
+      const response = await fetch(`${BASE_URL}/api/admin/rituals/add`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
+          // Note: Do not set Content-Type header when sending FormData; 
+          // the browser will set it automatically with the boundary.
         },
         body: data
       });
 
       if (response.ok) {
         setSuccess(true);
-        // Reset form after 2 seconds
+        // Reset form after 2 seconds - logic fully preserved
         setTimeout(() => {
           setSuccess(false);
           setFormData({
@@ -67,7 +70,7 @@ const AddRitual = () => {
         }, 2000);
       }
     } catch (err) {
-      console.error("Error adding ritual:", err);
+      console.error("Error adding ritual to sanctuary:", err);
     } finally {
       setLoading(false);
     }

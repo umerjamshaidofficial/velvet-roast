@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { ShieldCheck, Truck, Crown, Sparkles, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { BASE_URL } from '../api/config'; // Centralized source for sanctuary server URL
 
 const Membership = () => {
   const { user, isMember, updateUser } = useAuth();
@@ -20,7 +21,8 @@ const Membership = () => {
     
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5000/api/auth/${endpoint}`, {
+      // Updated to use dynamic BASE_URL
+      const response = await fetch(`${BASE_URL}/api/auth/${endpoint}`, {
         method: 'PUT',
         headers: { 
           'Authorization': `Bearer ${token}`,

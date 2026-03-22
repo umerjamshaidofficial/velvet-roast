@@ -11,7 +11,7 @@ const GiftRitualSection = ({ onGiftChange }) => {
     if (onGiftChange) {
       onGiftChange(isGift, { message, email });
     }
-  }, [isGift, message, email]);
+  }, [isGift, message, email, onGiftChange]);
 
   return (
     <div className="mt-10 space-y-6">

@@ -1,15 +1,13 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import { BASE_URL } from '../api/config'; // Centralized source for sanctuary server URL
 
 const AuthContext = createContext();
-
-// Use Environment Variable for the API URL
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // 1. Sync state with localStorage on mount
+  // 1. Sync state with localStorage on mount - Logic fully preserved
   useEffect(() => {
     const initAuth = () => {
       const savedUser = localStorage.getItem('user');
@@ -20,7 +18,7 @@ export const AuthProvider = ({ children }) => {
         try {
           setUser(JSON.parse(savedUser));
         } catch (err) {
-          console.error("Auth initialization failed:", err);
+          console.error("Auth initialization failed at sanctuary:", err);
           logout(); // Clear corrupted data
         }
       } else {
@@ -89,7 +87,9 @@ export const AuthProvider = ({ children }) => {
       // Check for Executive status (supports both snake_case and camelCase from DB/API)
       isMember: user?.is_member === true || user?.isMember === true,
       // Check for Admin status (matches the 'role' column in your DB)
-      isAdmin: user?.role === 'admin'
+      isAdmin: user?.role === 'admin',
+      // Provide BASE_URL to context consumers if needed
+      BASE_URL 
     }}>
       {/* 3. Prevents components from mounting until we know the auth state */}
       {!loading && children}

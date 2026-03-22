@@ -3,15 +3,21 @@ import { ShoppingCart, Lock, Sparkles } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { BASE_URL } from '../api/config';
 
 const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
-  const { isMember, isAuthenticated } = useAuth();
+  const { isMember } = useAuth();
   const navigate = useNavigate();
 
   // Logic: Is this a restricted "Vault" item?
   const isVaultItem = product.category === 'Vault';
   const isLocked = isVaultItem && !isMember;
+
+  // BASE_URL focused image logic
+  const productImage = product.image_url 
+    ? (product.image_url.startsWith('http') ? product.image_url : `${BASE_URL}${product.image_url}`)
+    : "/api/placeholder/400/400";
 
   const handleAction = () => {
     if (isLocked) {
@@ -40,7 +46,7 @@ const ProductCard = ({ product }) => {
       {/* Image Container */}
       <div className="relative aspect-square rounded-[2rem] overflow-hidden bg-[#FDFCF8] dark:bg-white/5 mb-6">
         <motion.img 
-          src={product.image_url || "/api/placeholder/400/400"} 
+          src={productImage} 
           alt={product.name}
           className={`w-full h-full object-cover transition-all duration-700 group-hover:scale-110 ${isLocked ? 'blur-md grayscale' : ''}`}
         />

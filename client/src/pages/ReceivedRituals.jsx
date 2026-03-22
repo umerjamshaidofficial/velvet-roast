@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Gift, Sparkles, ArrowLeft, Loader2, Inbox, Coffee } from 'lucide-react';
+import { Gift, Sparkles, ArrowLeft, Loader2, Inbox } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import RitualGiftCard from '../components/RitualGiftCard';
 import { useCart } from '../context/CartContext';
@@ -19,9 +19,14 @@ const ReceivedRituals = () => {
       if (isInitialLoad) setLoading(true);
       const data = await fetchReceivedGifts();
 
+      // Ensure we extract the array correctly from the response
       const giftData = Array.isArray(data) ? data : (data?.gifts || []);
       
-      // Sort logic: Unclaimed rituals first, then by date
+      /**
+       * Sort logic: 
+       * 1. Unclaimed rituals (is_claimed === false) appear first.
+       * 2. Within those groups, they are sorted by the most recent date.
+       */
       const sortedData = [...giftData].sort((a, b) => {
         if (a.is_claimed === b.is_claimed) {
           return new Date(b.created_at) - new Date(a.created_at);
@@ -31,7 +36,7 @@ const ReceivedRituals = () => {
 
       setRituals(sortedData);
 
-      // Trigger magic toast only on first successful load if gifts exist
+      // Trigger magic toast only on first successful load if new gifts exist
       if (isInitialLoad && sortedData.length > 0 && !hasSynced.current) {
         toast.success("A curated ritual has been found for your sanctuary!", {
           icon: '✨',
@@ -48,6 +53,7 @@ const ReceivedRituals = () => {
         });
       }
 
+      // Sync the global gift badge count
       if (!hasSynced.current && fetchGiftCount) {
         setTimeout(() => { if (fetchGiftCount) fetchGiftCount(); }, 100);
         hasSynced.current = true;
@@ -63,9 +69,9 @@ const ReceivedRituals = () => {
     getRituals();
   }, [fetchGiftCount]);
 
-  // Handler for when a gift is claimed to refresh the local list
+  // Handler to refresh the list without full screen re-load when a gift is claimed
   const handleClaimSuccess = () => {
-    getRituals(false); // Refresh list without the full screen loader
+    getRituals(false); 
     if (fetchGiftCount) fetchGiftCount();
   };
 
@@ -93,7 +99,6 @@ const ReceivedRituals = () => {
           Return to Sanctuary
         </button>
 
-        {/* Centered Header Section */}
         <header className="text-center mb-24 w-full">
           <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="flex justify-center mb-8">
             <div className="bg-[#D4AF37]/10 p-5 rounded-full border border-[#D4AF37]/20">

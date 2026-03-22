@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ShoppingBag, ArrowRight, Coffee, ChevronLeft, Star } from 'lucide-react';
+import { ShoppingBag, ArrowRight, Coffee, ChevronLeft } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { BASE_URL } from '../api/config'; // Centralized source for sanctuary server URL
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -15,10 +16,11 @@ const ProductDetail = () => {
   useEffect(() => {
     const fetchProductData = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/rituals/${id}`);
+        // Updated to use dynamic BASE_URL
+        const res = await fetch(`${BASE_URL}/api/rituals/${id}`);
         const data = await res.json();
         setProduct(data.product);
-        setRelated(data.related); // Assumes backend sends items with same roast preference
+        setRelated(data.related); 
       } catch (err) {
         console.error(err);
       } finally {
@@ -30,9 +32,8 @@ const ProductDetail = () => {
   }, [id]);
 
   /**
-   * UPDATED: handleBuyNow
-   * Instead of just adding to cart, we pass the item directly 
-   * to checkout via location state to bypass the global cart if desired.
+   * handleBuyNow
+   * Passes the item directly to checkout via location state.
    */
   const handleBuyNow = () => {
     navigate('/checkout', { 
@@ -71,7 +72,7 @@ const ProductDetail = () => {
           className="aspect-[4/5] rounded-[4rem] overflow-hidden bg-[#3E2723]/5 dark:bg-white/5 shadow-2xl relative"
         >
           <img 
-            src={`http://localhost:5000/uploads/${product.image_url}`} 
+            src={`${BASE_URL}/uploads/${product.image_url}`} 
             alt={product.name} 
             className="w-full h-full object-cover" 
           />
@@ -133,7 +134,7 @@ const ProductDetail = () => {
             <Link key={item.id} to={`/ritual/${item.id}`} className="group block">
               <div className="aspect-square rounded-[2.5rem] overflow-hidden bg-[#3E2723]/5 dark:bg-white/5 mb-6 shadow-sm group-hover:shadow-xl transition-all">
                 <img 
-                  src={`http://localhost:5000/uploads/${item.image_url}`} 
+                  src={`${BASE_URL}/uploads/${item.image_url}`} 
                   alt={item.name} 
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
                 />

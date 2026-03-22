@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Gift, Mail, Calendar, CheckCircle2, HandHeart, Coffee, Sparkles, Zap, Moon, Sun } from 'lucide-react';
 import GratitudeModal from './GratitudeModal';
+import { BASE_URL } from '../api/config';
 
 const RitualGiftCard = ({ gift, onClaimSuccess }) => {
   const [isClaiming, setIsClaiming] = useState(false);
@@ -9,10 +10,9 @@ const RitualGiftCard = ({ gift, onClaimSuccess }) => {
   const [showGratitude, setShowGratitude] = useState(false);
   const [hasSentGratitude, setHasSentGratitude] = useState(gift.gratitude_sent || false);
 
-  const backendUrl = "http://localhost:5000";
-  
+  // Focused BASE_URL update for sender photos
   const senderPhoto = gift.sender_photo 
-    ? `${backendUrl}${gift.sender_photo.startsWith('/') ? '' : '/'}${gift.sender_photo}` 
+    ? (gift.sender_photo.startsWith('http') ? gift.sender_photo : `${BASE_URL}${gift.sender_photo.startsWith('/') ? '' : '/'}${gift.sender_photo}`) 
     : `https://ui-avatars.com/api/?name=${gift.sender_name || 'User'}&background=D4AF37&color=fff`;
 
   // Helper to determine icon based on item name
@@ -30,7 +30,8 @@ const RitualGiftCard = ({ gift, onClaimSuccess }) => {
     setIsClaiming(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`${backendUrl}/api/orders/received/${gift.id}/claim`, {
+      // Updated to use dynamic BASE_URL
+      const response = await fetch(`${BASE_URL}/api/orders/received/${gift.id}/claim`, {
         method: 'PUT',
         headers: { 
           'Authorization': `Bearer ${token}`,
@@ -43,7 +44,7 @@ const RitualGiftCard = ({ gift, onClaimSuccess }) => {
         if (onClaimSuccess) onClaimSuccess();
       }
     } catch (err) {
-      console.error("Claim error:", err);
+      console.error("Claim error at sanctuary server:", err);
     } finally {
       setIsClaiming(false);
     }
@@ -57,7 +58,7 @@ const RitualGiftCard = ({ gift, onClaimSuccess }) => {
     <div className="group relative">
       <AnimatePresence mode="wait">
         {!isUnwrapped ? (
-          /* CLOSED ENVELOPE STATE */
+          /* CLOSED ENVELOPE STATE - UI PRESERVED */
           <motion.div
             key="envelope"
             initial={{ opacity: 0, scale: 0.95 }}
@@ -68,30 +69,30 @@ const RitualGiftCard = ({ gift, onClaimSuccess }) => {
             className="relative cursor-pointer bg-[#FDFCF8] dark:bg-[#1A0A0A] border border-[#D4AF37]/30 rounded-[3rem] p-4 shadow-[0_40px_80px_-15px_rgba(212,175,55,0.15)] overflow-hidden group/env"
           >
             <div className="relative h-[350px] flex flex-col items-center justify-center border border-[#D4AF37]/10 rounded-[2.5rem] overflow-hidden">
-               <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 30L15 0H45L30 30Z' fill='%23D4AF37'/%3E%3C/svg%3E")` }} />
-               
-               <motion.div 
-                 animate={{ y: [0, -10, 0] }} 
-                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                 className="z-10 flex flex-col items-center"
-               >
-                 <motion.div 
-                   whileHover={{ rotate: [0, -5, 5, 0] }}
-                   className="w-20 h-20 rounded-full bg-[#3E2723] dark:bg-[#D4AF37] flex items-center justify-center shadow-2xl mb-6"
-                 >
-                   <Gift className="text-white dark:text-[#1A0A0A] w-8 h-8" />
-                 </motion.div>
-                 <h3 className="font-playfair text-2xl font-bold text-[#3E2723] dark:text-white italic text-center">A Gift for You</h3>
-                 <p className="text-[10px] uppercase tracking-[0.4em] font-black text-[#D4AF37] mt-2">From {senderName}</p>
-               </motion.div>
+                <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 30L15 0H45L30 30Z' fill='%23D4AF37'/%3E%3C/svg%3E")` }} />
+                
+                <motion.div 
+                  animate={{ y: [0, -10, 0] }} 
+                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                  className="z-10 flex flex-col items-center"
+                >
+                  <motion.div 
+                    whileHover={{ rotate: [0, -5, 5, 0] }}
+                    className="w-20 h-20 rounded-full bg-[#3E2723] dark:bg-[#D4AF37] flex items-center justify-center shadow-2xl mb-6"
+                  >
+                    <Gift className="text-white dark:text-[#1A0A0A] w-8 h-8" />
+                  </motion.div>
+                  <h3 className="font-playfair text-2xl font-bold text-[#3E2723] dark:text-white italic text-center">A Gift for You</h3>
+                  <p className="text-[10px] uppercase tracking-[0.4em] font-black text-[#D4AF37] mt-2">From {senderName}</p>
+                </motion.div>
 
-               <div className="absolute bottom-8 text-[9px] uppercase font-bold tracking-[0.3em] text-[#3E2723]/30 animate-pulse">
-                 {isClaiming ? 'Unveiling Ritual...' : 'Tap to Uncover Ritual'}
-               </div>
+                <div className="absolute bottom-8 text-[9px] uppercase font-bold tracking-[0.3em] text-[#3E2723]/30 animate-pulse">
+                  {isClaiming ? 'Unveiling Ritual...' : 'Tap to Uncover Ritual'}
+                </div>
             </div>
           </motion.div>
         ) : (
-          /* OPENED CARD STATE */
+          /* OPENED CARD STATE - UI PRESERVED */
           <motion.div
             key="card"
             initial={{ opacity: 0, y: 20, scale: 0.98 }}
@@ -106,6 +107,7 @@ const RitualGiftCard = ({ gift, onClaimSuccess }) => {
                     src={senderPhoto} 
                     alt={senderName} 
                     className="w-full h-full object-cover"
+                    referrerPolicy="no-referrer"
                     onError={(e) => { 
                       e.target.onerror = null; 
                       e.target.src = `https://ui-avatars.com/api/?name=${senderName}&background=D4AF37&color=fff`; 

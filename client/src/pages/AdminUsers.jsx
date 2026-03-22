@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Mail, User, RefreshCcw } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { BASE_URL } from '../api/config'; // Centralized source for sanctuary server URL
 
 const AdminUsers = () => {
   const [users, setUsers] = useState([]);
@@ -17,7 +18,8 @@ const AdminUsers = () => {
       }
 
       try {
-        const response = await fetch('http://localhost:5000/api/admin/users', {
+        // Updated to use dynamic BASE_URL from config
+        const response = await fetch(`${BASE_URL}/api/admin/users`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         

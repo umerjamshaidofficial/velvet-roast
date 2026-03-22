@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Coffee, Instagram, Facebook, Twitter, ArrowRight } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
+import { BASE_URL } from '../api/config';
 
 const Footer = () => {
   const navigate = useNavigate();
@@ -65,7 +66,6 @@ const Footer = () => {
                 </a>
               </li>
               <li>
-                {/* FIXED TAGS BELOW */}
                 <Link to="/my-orders" className="text-[#3E2723]/40 dark:text-white/30 hover:text-[#D4AF37] dark:hover:text-velvet-cinnamon text-[10px] uppercase tracking-[0.2em] font-bold transition-colors">
                   Track Order
                 </Link>

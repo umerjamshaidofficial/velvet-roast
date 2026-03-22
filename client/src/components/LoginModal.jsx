@@ -5,6 +5,7 @@ import { Globe, X } from 'lucide-react';
 import { auth, googleProvider } from '../firebase'; 
 import { signInWithPopup } from 'firebase/auth';
 import { useAuth } from '../context/AuthContext';
+import { BASE_URL } from '../api/config';
 
 const LoginModal = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
@@ -57,9 +58,8 @@ const LoginModal = ({ isOpen, onClose }) => {
     const params = new URLSearchParams(location.search);
     const redirectTo = params.get('redirect');
 
-    // Role-based navigation logic
+    // Role-based navigation logic fully preserved
     if (user.role === 'admin') {
-      // replace: true prevents the user from clicking "back" into the login modal
       navigate('/admin', { replace: true });
     } else if (redirectTo) {
       navigate(`/${redirectTo}`);
@@ -73,10 +73,10 @@ const LoginModal = ({ isOpen, onClose }) => {
     try {
       const result = await signInWithPopup(auth, googleProvider);
       const firebaseUser = result.user;
-
       const nameParts = firebaseUser.displayName ? firebaseUser.displayName.split(' ') : [];
 
-      const response = await fetch('http://localhost:5000/api/auth/google-login', {
+      // Using centralized BASE_URL for Google Auth
+      const response = await fetch(`${BASE_URL}/api/auth/google-login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -93,11 +93,11 @@ const LoginModal = ({ isOpen, onClose }) => {
       if (response.ok) {
         handleAuthSuccess(data.user, data.token);
       } else {
-        setStatusMsg({ type: 'error', text: data.message || 'Google Auth Failed' });
+        setStatusMsg({ type: 'error', text: data.message || 'Sanctuary Access Denied' });
       }
     } catch (err) {
       console.error("Google Sign-In Error:", err);
-      setStatusMsg({ type: 'error', text: 'Google Sign-In Failed' });
+      setStatusMsg({ type: 'error', text: 'Google Ritual Failed' });
     }
   };
 
@@ -106,7 +106,7 @@ const LoginModal = ({ isOpen, onClose }) => {
     const endpoint = isRegistering ? '/api/auth/register' : '/api/auth/login';
 
     try {
-      const response = await fetch(`http://localhost:5000${endpoint}`, {
+      const response = await fetch(`${BASE_URL}${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
@@ -117,7 +117,7 @@ const LoginModal = ({ isOpen, onClose }) => {
       if (response.ok) {
         if (isRegistering) {
           setIsRegistering(false);
-          setStatusMsg({ type: 'success', text: 'Account created! Please sign in.' });
+          setStatusMsg({ type: 'success', text: 'Ritual account created! Please sign in.' });
         } else {
           handleAuthSuccess(data.user, data.token);
         }
@@ -126,7 +126,7 @@ const LoginModal = ({ isOpen, onClose }) => {
       }
     } catch (err) {
       console.error("Auth Error:", err);
-      setStatusMsg({ type: 'error', text: 'Connection failed' });
+      setStatusMsg({ type: 'error', text: 'Connection to sanctuary failed' });
     }
   };
 
@@ -187,7 +187,7 @@ const LoginModal = ({ isOpen, onClose }) => {
                     value={formData.firstName}
                     onChange={handleChange}
                     required
-                    className="w-full bg-[#3E2723]/5 dark:bg-white/5 border-none rounded-2xl px-5 py-4 text-xs focus:ring-1 focus:ring-[#D4AF37] transition-all"
+                    className="w-full bg-[#3E2723]/5 dark:bg-white/5 border-none rounded-2xl px-5 py-4 text-xs focus:ring-1 focus:ring-[#D4AF37] transition-all text-[#3E2723] dark:text-white"
                   />
                   <input
                     name="lastName"
@@ -196,7 +196,7 @@ const LoginModal = ({ isOpen, onClose }) => {
                     value={formData.lastName}
                     onChange={handleChange}
                     required
-                    className="w-full bg-[#3E2723]/5 dark:bg-white/5 border-none rounded-2xl px-5 py-4 text-xs focus:ring-1 focus:ring-[#D4AF37] transition-all"
+                    className="w-full bg-[#3E2723]/5 dark:bg-white/5 border-none rounded-2xl px-5 py-4 text-xs focus:ring-1 focus:ring-[#D4AF37] transition-all text-[#3E2723] dark:text-white"
                   />
                 </div>
               )}
@@ -209,7 +209,7 @@ const LoginModal = ({ isOpen, onClose }) => {
                   value={formData.username}
                   onChange={handleChange}
                   required
-                  className="w-full bg-[#3E2723]/5 dark:bg-white/5 border-none rounded-2xl px-5 py-4 text-xs focus:ring-1 focus:ring-[#D4AF37] transition-all"
+                  className="w-full bg-[#3E2723]/5 dark:bg-white/5 border-none rounded-2xl px-5 py-4 text-xs focus:ring-1 focus:ring-[#D4AF37] transition-all text-[#3E2723] dark:text-white"
                 />
               )}
 
@@ -220,7 +220,7 @@ const LoginModal = ({ isOpen, onClose }) => {
                 value={formData.email}
                 onChange={handleChange}
                 required
-                className="w-full bg-[#3E2723]/5 dark:bg-white/5 border-none rounded-2xl px-5 py-4 text-xs focus:ring-1 focus:ring-[#D4AF37] transition-all"
+                className="w-full bg-[#3E2723]/5 dark:bg-white/5 border-none rounded-2xl px-5 py-4 text-xs focus:ring-1 focus:ring-[#D4AF37] transition-all text-[#3E2723] dark:text-white"
               />
 
               <input
@@ -230,10 +230,10 @@ const LoginModal = ({ isOpen, onClose }) => {
                 value={formData.password}
                 onChange={handleChange}
                 required
-                className="w-full bg-[#3E2723]/5 dark:bg-white/5 border-none rounded-2xl px-5 py-4 text-xs focus:ring-1 focus:ring-[#D4AF37] transition-all"
+                className="w-full bg-[#3E2723]/5 dark:bg-white/5 border-none rounded-2xl px-5 py-4 text-xs focus:ring-1 focus:ring-[#D4AF37] transition-all text-[#3E2723] dark:text-white"
               />
 
-              <button className="w-full bg-[#3E2723] dark:bg-[#D4AF37] text-white dark:text-[#1A0A0A] py-4 rounded-full font-bold uppercase tracking-[0.3em] text-[10px] mt-2 hover:opacity-90 transition-all shadow-lg">
+              <button className="w-full bg-[#3E2723] dark:bg-[#D4AF37] text-white dark:text-[#1A0A0A] py-4 rounded-full font-bold uppercase tracking-[0.3em] text-[10px] mt-2 hover:opacity-90 transition-all shadow-lg active:scale-95">
                 {isRegistering ? 'Create Account' : 'Sign In'}
               </button>
             </form>

@@ -10,16 +10,14 @@ const Hero = () => {
     offset: ["start start", "end start"]
   });
 
-  // CE: Increased initial offset to '70px' to ensure it doesn't touch the fixed Nav bar.
-  // Original was: [0, -150]. Now it starts much lower and floats up less aggressively.
+  // Increased initial offset to '70px' to ensure it doesn't touch the fixed Nav bar.
   const yImage = useTransform(scrollYProgress, [0, 1], [70, -100]);
   const rotateImage = useTransform(scrollYProgress, [0, 1], [0, 10]);
 
   return (
-    // Background: Transitions from Cream to Deep Roasted Bean
     <section ref={containerRef} className="relative h-screen flex items-center justify-center bg-[#FDFCF8] dark:bg-velvet-bean transition-colors duration-700 overflow-hidden py-12 px-6">
       
-      {/* Background Glow: Warm Gold in Light, Deep Oxblood in Dark */}
+      {/* Background Glow */}
       <div className="absolute top-1/3 right-0 w-[500px] h-[500px] bg-[#D4AF37]/5 dark:bg-velvet-oxblood/20 rounded-full blur-[120px] z-0 transition-colors duration-1000" />
 
       <div className="container mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10 max-w-6xl">
@@ -38,7 +36,6 @@ const Hero = () => {
           
           <h1 className="text-5xl md:text-6xl font-playfair leading-[1.1] mb-6 tracking-tight text-[#3E2723] dark:text-white">
             The Sophistication of <br />
-            {/* Gradient: Swaps to a "Craving" Cinnamon-Red in Dark Mode */}
             <span className="italic font-light text-transparent bg-clip-text bg-gradient-to-r from-[#8C6A5E] to-[#D4AF37] dark:from-velvet-oxblood dark:to-velvet-cinnamon">
               Darker Blends
             </span>
@@ -53,8 +50,9 @@ const Hero = () => {
           <div className="flex flex-wrap gap-8 items-center">
             <motion.button 
               whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => navigate('/menu')}
-              className="px-8 py-4 border border-[#3E2723]/20 dark:border-white/10 rounded-full text-[9px] uppercase tracking-[0.3em] font-bold transition-all duration-500 text-[#3E2723] dark:text-white hover:bg-[#D4AF37] dark:hover:bg-velvet-oxblood hover:text-white"
+              className="px-8 py-4 border border-[#3E2723]/20 dark:border-white/10 rounded-full text-[9px] uppercase tracking-[0.3em] font-bold transition-all duration-500 text-[#3E2723] dark:text-white hover:bg-[#3E2723] dark:hover:bg-white hover:text-white dark:hover:text-black"
             >
               Explore Collection
             </motion.button>
@@ -81,7 +79,6 @@ const Hero = () => {
               transition={{ delay: 0.5, duration: 1 }}
               className="absolute top-10 -right-8 bg-white/80 dark:bg-velvet-bean/80 backdrop-blur-2xl border border-white dark:border-white/10 p-6 rounded-2xl hidden xl:block w-56 shadow-xl"
             >
-              {/* Updated to font-inter for numeric alignment */}
               <div className="text-[#D4AF37] dark:text-velvet-cinnamon text-2xl font-inter font-medium mb-1">98%</div>
               <p className="text-[#3E2723]/40 dark:text-white/30 text-[8px] uppercase tracking-widest leading-loose">
                 User Satisfaction in <br /> Smoothness & Aroma
@@ -89,7 +86,7 @@ const Hero = () => {
             </motion.div>
           </motion.div>
 
-          {/* Decorative Warm Pulse: Glows Red/Brown in Dark Mode */}
+          {/* Decorative Warm Pulse */}
           <div className="absolute -z-10 w-[110%] h-[110%] bg-gradient-to-tr from-[#8C6A5E]/10 dark:from-velvet-oxblood/20 to-transparent rounded-full blur-[100px] opacity-30 animate-pulse" />
         </div>
       </div>

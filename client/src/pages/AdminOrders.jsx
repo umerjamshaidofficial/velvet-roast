@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, MapPin, RefreshCcw, User, CheckCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
+import { BASE_URL } from '../api/config'; // Centralized source for sanctuary server URL
 
 const AdminOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -12,13 +13,15 @@ const AdminOrders = () => {
   const fetchOrders = async () => {
     const token = localStorage.getItem('token');
     try {
-      const response = await fetch('http://localhost:5000/api/admin/orders', {
+      // Updated to use dynamic BASE_URL
+      const response = await fetch(`${BASE_URL}/api/admin/orders`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await response.json();
       setOrders(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error("Error fetching orders:", err);
+      toast.error("Failed to fetch order registry");
     } finally {
       setLoading(false);
     }
@@ -33,7 +36,8 @@ const AdminOrders = () => {
     const token = localStorage.getItem('token');
     
     try {
-      const response = await fetch(`http://localhost:5000/api/admin/orders/${orderId}/status`, {
+      // Updated to use dynamic BASE_URL
+      const response = await fetch(`${BASE_URL}/api/admin/orders/${orderId}/status`, {
         method: 'PUT',
         headers: { 
           'Content-Type': 'application/json',

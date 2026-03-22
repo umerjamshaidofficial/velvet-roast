@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Gift, Send } from 'lucide-react';
+import { BASE_URL } from '../../api/config';
 
 const GiftRitual = ({ showToast }) => {
     const [email, setEmail] = useState('');
@@ -10,7 +11,7 @@ const GiftRitual = ({ showToast }) => {
         e.preventDefault();
         setLoading(true);
         try {
-            const response = await fetch('http://localhost:5000/api/gifts/send-ritual', {
+            const response = await fetch(`${BASE_URL}/api/gifts/send-ritual`, {
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json',
@@ -40,17 +41,17 @@ const GiftRitual = ({ showToast }) => {
             <form onSubmit={handleSendGift} className="space-y-4">
                 <input 
                     type="email" placeholder="Recipient's Email" required
-                    className="w-full bg-transparent border-b border-[#3E2723]/10 py-3 outline-none focus:border-[#D4AF37]"
+                    className="w-full bg-transparent border-b border-[#3E2723]/10 py-3 outline-none focus:border-[#D4AF37] dark:text-white"
                     value={email} onChange={(e) => setEmail(e.target.value)}
                 />
                 <textarea 
                     placeholder="A personal message for their journey..."
-                    className="w-full bg-transparent border border-[#3E2723]/10 p-4 rounded-xl outline-none focus:border-[#D4AF37] h-32"
+                    className="w-full bg-transparent border border-[#3E2723]/10 p-4 rounded-xl outline-none focus:border-[#D4AF37] h-32 dark:text-white resize-none"
                     value={message} onChange={(e) => setMessage(e.target.value)}
                 />
                 <button 
                     disabled={loading}
-                    className="w-full py-4 bg-[#3E2723] text-white rounded-full text-[10px] uppercase font-black tracking-widest hover:bg-[#D4AF37] transition-all flex justify-center items-center gap-2"
+                    className="w-full py-4 bg-[#3E2723] dark:bg-velvet-oxblood text-white rounded-full text-[10px] uppercase font-black tracking-widest hover:bg-[#D4AF37] transition-all flex justify-center items-center gap-2 disabled:opacity-50"
                 >
                     {loading ? "Sending..." : <><Send size={14}/> Dispatch Invite</>}
                 </button>

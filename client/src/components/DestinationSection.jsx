@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { MapPin, Edit3, Trash2, X, Globe, ArrowUpRight } from 'lucide-react';
+import { BASE_URL } from '../../api/config';
 
 const DestinationSection = ({ 
   addresses, 
@@ -25,8 +26,8 @@ const DestinationSection = ({
     }
     setLoading(true);
     const url = isEditingAddress 
-      ? `http://localhost:5000/api/profile/addresses/${currentAddressId}` 
-      : 'http://localhost:5000/api/profile/addresses';
+      ? `${BASE_URL}/api/profile/addresses/${currentAddressId}` 
+      : `${BASE_URL}/api/profile/addresses`;
     const method = isEditingAddress ? 'PUT' : 'POST';
 
     try {
@@ -71,7 +72,7 @@ const DestinationSection = ({
 
   const handleDeleteAddress = async (id) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/profile/addresses/${id}`, {
+      const response = await fetch(`${BASE_URL}/api/profile/addresses/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });

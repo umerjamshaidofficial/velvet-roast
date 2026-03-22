@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Send, Sparkles, PenTool } from 'lucide-react';
+import { BASE_URL } from '../../api/config';
 
 const GratitudeModal = ({ isOpen, onClose, gift, onGratitudeSent }) => {
   const [message, setMessage] = useState('');
@@ -13,7 +14,7 @@ const GratitudeModal = ({ isOpen, onClose, gift, onGratitudeSent }) => {
     try {
       const token = localStorage.getItem('token');
       // This endpoint will save the thanks and trigger the sender's nav notification
-      const response = await fetch(`http://localhost:5000/api/orders/thank/${gift.id}`, {
+      const response = await fetch(`${BASE_URL}/api/orders/thank/${gift.id}`, {
         method: 'POST',
         headers: { 
           'Authorization': `Bearer ${token}`,
@@ -24,6 +25,8 @@ const GratitudeModal = ({ isOpen, onClose, gift, onGratitudeSent }) => {
 
       if (response.ok) {
         onGratitudeSent();
+        onClose();
+        setMessage('');
       }
     } catch (err) {
       console.error("Error sending gratitude:", err);
@@ -68,7 +71,7 @@ const GratitudeModal = ({ isOpen, onClose, gift, onGratitudeSent }) => {
                   Send <span className="italic">Gratitude</span>
                 </h3>
                 <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-[#3E2723]/40 dark:text-white/30">
-                  To {gift.sender_name || 'A Kindred Soul'}
+                  To {gift?.sender_name || 'A Kindred Soul'}
                 </p>
               </header>
 
@@ -77,7 +80,7 @@ const GratitudeModal = ({ isOpen, onClose, gift, onGratitudeSent }) => {
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder="Type your message of thanks here..."
-                  className="w-full h-40 bg-white/50 dark:bg-white/[0.02] border border-[#3E2723]/5 dark:border-white/5 rounded-3xl p-6 text-sm text-[#3E2723] dark:text-white placeholder:text-[#3E2723]/20 dark:placeholder:text-white/10 focus:outline-none focus:border-[#D4AF37]/30 transition-all resize-none font-medium leading-relaxed"
+                  className="w-full h-40 bg-white/50 dark:bg-white/[0.02] border border-[#3E2723]/5 dark:border-white/5 rounded-3xl p-6 text-sm text-[#3E2723] dark:text-white placeholder:text-[#3E2723]/20 dark:placeholder:text-white/10 focus:outline-none focus:border-[#D4AF37]/30 transition-all resize-none font-medium leading-relaxed shadow-inner"
                 />
                 <div className="absolute bottom-4 right-6 pointer-events-none">
                    <Sparkles size={16} className="text-[#D4AF37]/20" />

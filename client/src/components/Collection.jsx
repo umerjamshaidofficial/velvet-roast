@@ -4,6 +4,7 @@ import { ShoppingBag, ArrowUpRight, Lock, Crown, Coffee } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext'; 
 import { useNavigate } from 'react-router-dom';
+import { BASE_URL } from '../api/config';
 
 const Collection = () => {
   const [products, setProducts] = useState([]);
@@ -15,7 +16,7 @@ const Collection = () => {
   useEffect(() => {
     const fetchAdminProducts = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/rituals');
+        const response = await fetch(`${BASE_URL}/api/rituals`);
         const data = await response.json();
         // Take only the first three products added by admin
         setProducts(data.slice(0, 3));
@@ -77,7 +78,7 @@ const Collection = () => {
                   )}
 
                   <img 
-                    src={`http://localhost:5000/uploads/${product.image_url}`} 
+                    src={`${BASE_URL}/uploads/${product.image_url}`} 
                     alt={product.name}
                     className={`w-full h-full object-cover transition-all duration-1000 
                       ${isLocked ? 'blur-xl grayscale' : 'group-hover:scale-105 brightness-100 dark:brightness-90 group-hover:brightness-110 dark:group-hover:brightness-100'}

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Coffee, ShieldCheck, Lock, Sparkles, ShoppingBag, Crown } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { BASE_URL } from '../api/config'; // Centralized source for sanctuary server URL
 
 const FullMenu = () => {
   const [rituals, setRituals] = useState([]);
@@ -17,7 +18,7 @@ const FullMenu = () => {
   useEffect(() => {
     const fetchRituals = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/rituals');
+        const response = await fetch(`${BASE_URL}/api/rituals`);
         if (!response.ok) throw new Error("Network response was not ok");
         const data = await response.json();
         setRituals(data);
@@ -141,9 +142,9 @@ const FullMenu = () => {
                     </div>
                   )}
 
-                  {/* Product Image */}
+                  {/* Product Image - Updated with BASE_URL */}
                   <img 
-                    src={`http://localhost:5000/uploads/${ritual.image_url}`} 
+                    src={`${BASE_URL}/uploads/${ritual.image_url}`} 
                     alt={ritual.name}
                     loading="lazy"
                     className={`w-full h-full object-cover transition-all duration-700 will-change-transform

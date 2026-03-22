@@ -159,7 +159,6 @@ const MyOrders = () => {
                         Re-order Ritual
                       </button>
 
-                      {/* DYNAMIC STATUS BADGE */}
                       <div className={`flex items-center gap-2 px-4 py-2 rounded-full border transition-all duration-500 ${
                         order.status === 'delivered' 
                         ? 'bg-emerald-500/10 border-emerald-500/20' 

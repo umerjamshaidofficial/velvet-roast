@@ -8,9 +8,10 @@ const OrderSuccess = () => {
   const { isMember } = useCart(); 
   const navigate = useNavigate();
   
+  // Safe access to state with fallbacks
   const isGift = state?.isGift || false;
   const orderId = state?.orderId || "VR-000000";
-  const customer = state?.customer; // Access customer details passed from Checkout
+  const customer = state?.customer || null; 
 
   // Navigation back to the home page with a smooth scroll to the menu
   const handleReturnHome = (e) => {
@@ -84,7 +85,7 @@ const OrderSuccess = () => {
                 : "Your selection has been secured. We are preparing your coffee ritual with the utmost care."}
           </p>
 
-          {/* NEW: Destination Summary Section */}
+          {/* Destination Summary Section */}
           {customer && (
             <motion.div 
               initial={{ opacity: 0 }}

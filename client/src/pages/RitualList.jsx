@@ -2,16 +2,17 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Trash2, Edit3, Eye, EyeOff, Crown, 
-  Search, Coffee, AlertCircle, Save, X, Package 
+  Search, Coffee, Save, X 
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { BASE_URL } from '../api/config'; // Centralized source for sanctuary server URL
 
 const RitualList = () => {
   const [rituals, setRituals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState('all'); 
-  const [editingId, setEditingId] = useState(null); // Track which ritual is being edited
+  const [editingId, setEditingId] = useState(null); 
   const [editData, setEditData] = useState({});
 
   useEffect(() => {
@@ -20,7 +21,7 @@ const RitualList = () => {
 
   const fetchRituals = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/rituals');
+      const response = await fetch(`${BASE_URL}/api/rituals`);
       const data = await response.json();
       setRituals(data);
     } catch (err) {
@@ -39,7 +40,7 @@ const RitualList = () => {
 
   const handleUpdate = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/rituals/${editingId}`, {
+      const response = await fetch(`${BASE_URL}/api/rituals/${editingId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(editData),
@@ -58,7 +59,7 @@ const RitualList = () => {
   const toggleVisibility = async (ritual) => {
     const newStatus = ritual.visibility === 'hidden' ? 'public' : 'hidden';
     try {
-      const response = await fetch(`http://localhost:5000/api/rituals/${ritual.id}/visibility`, {
+      const response = await fetch(`${BASE_URL}/api/rituals/${ritual.id}/visibility`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ visibility: newStatus }),
@@ -75,7 +76,7 @@ const RitualList = () => {
   const handleDelete = async (id) => {
     if (!window.confirm("Permanently remove this ritual from the database?")) return;
     try {
-      const response = await fetch(`http://localhost:5000/api/rituals/${id}`, { method: 'DELETE' });
+      const response = await fetch(`${BASE_URL}/api/rituals/${id}`, { method: 'DELETE' });
       if (response.ok) {
         setRituals(rituals.filter(r => r.id !== id));
         toast.success("Ritual deleted");
@@ -147,7 +148,7 @@ const RitualList = () => {
                 <div className="p-4 flex items-center justify-between">
                   <div className="flex items-center gap-6">
                     <div className="w-16 h-16 rounded-2xl overflow-hidden bg-gray-100 border border-[#3E2723]/5">
-                      <img src={`http://localhost:5000/uploads/${ritual.image_url}`} alt="" className="w-full h-full object-cover" />
+                      <img src={`${BASE_URL}/uploads/${ritual.image_url}`} alt="" className="w-full h-full object-cover" />
                     </div>
                     <div>
                       <h4 className="font-bold text-[#3E2723] dark:text-white flex items-center gap-2">

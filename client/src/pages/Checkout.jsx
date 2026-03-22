@@ -5,6 +5,7 @@ import { ChevronLeft, ArrowRight, Loader2, Crown, Truck, Trash, Plus, MapPin } f
 import { useNavigate, useLocation } from 'react-router-dom';
 import GiftRitualSection from '../components/GiftRitualSection';
 import { createOrder } from '../api/orderService';
+import { BASE_URL } from '../api/config'; // Centralized source for sanctuary server URL
 
 const Checkout = () => {
   const { cart, cartTotal, shippingFee, grandTotal, isMember, clearCart, removeFromCart, addToCart, showToast } = useCart();
@@ -35,7 +36,6 @@ const Checkout = () => {
   useEffect(() => {
     if (location.state?.directBuyItem) {
       const item = location.state.directBuyItem;
-      // Check if item already exists to avoid duplicates, or just use addToCart logic
       addToCart(item);
     }
   }, []);
@@ -43,7 +43,7 @@ const Checkout = () => {
   useEffect(() => {
     const fetchAddresses = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/profile/me', {
+        const response = await fetch(`${BASE_URL}/api/profile/me`, {
           headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
         });
         
@@ -98,7 +98,7 @@ const Checkout = () => {
   const handleDeleteAddress = async (e, id) => {
     e.stopPropagation();
     try {
-      const resp = await fetch(`http://localhost:5000/api/profile/addresses/${id}`, {
+      const resp = await fetch(`${BASE_URL}/api/profile/addresses/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
@@ -130,7 +130,7 @@ const Checkout = () => {
     try {
       let recipientStatus = { exists: false };
       if (giftData.isGift) {
-        const checkRes = await fetch(`http://localhost:5000/api/gifts/check-recipient?email=${giftData.recipientEmail}`, {
+        const checkRes = await fetch(`${BASE_URL}/api/gifts/check-recipient?email=${giftData.recipientEmail}`, {
           headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
         });
         recipientStatus = await checkRes.json();
@@ -152,7 +152,7 @@ const Checkout = () => {
       const result = await createOrder(orderData);
 
       if (giftData.isGift && !recipientStatus.exists) {
-        await fetch('http://localhost:5000/api/gifts/send-ritual', {
+        await fetch(`${BASE_URL}/api/gifts/send-ritual`, {
           method: 'POST',
           headers: { 
             'Content-Type': 'application/json',
@@ -308,7 +308,7 @@ const Checkout = () => {
                 <div key={item.id} className="flex justify-between items-center group">
                   <div className="flex items-center gap-4">
                     <img 
-                      src={item.image_url ? `http://localhost:5000/uploads/${item.image_url}` : item.image} 
+                      src={item.image_url ? `${BASE_URL}/uploads/${item.image_url}` : item.image} 
                       alt={item.name} 
                       className="w-12 h-16 rounded-xl object-cover" 
                     />

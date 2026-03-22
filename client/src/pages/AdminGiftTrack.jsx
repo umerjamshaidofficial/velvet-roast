@@ -7,11 +7,10 @@ import {
   Search, 
   RefreshCcw,
   ExternalLink,
-  Mail,
-  User,
   ArrowRight
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { BASE_URL } from '../api/config'; // Centralized source for sanctuary server URL
 
 const AdminGiftTrack = () => {
   const [gifts, setGifts] = useState([]);
@@ -25,11 +24,13 @@ const AdminGiftTrack = () => {
   const fetchGiftData = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:5000/api/admin/gifts');
+      // Updated to use dynamic BASE_URL
+      const response = await fetch(`${BASE_URL}/api/admin/gifts`);
       const data = await response.json();
       setGifts(Array.isArray(data) ? data : []);
     } catch (err) {
       toast.error("Failed to sync gift registry");
+      console.error("Gift sync error:", err);
     } finally {
       setLoading(false);
     }

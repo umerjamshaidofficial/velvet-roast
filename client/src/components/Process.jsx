@@ -1,8 +1,11 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Leaf, Flame, Zap } from 'lucide-react';
+import { BASE_URL } from '../api/config';
 
 const Process = () => {
-  const steps = [
+  // Maintaining your exact default structure as initial state
+  const [steps, setSteps] = useState([
     { 
       icon: <Leaf size={24} />, 
       title: "Ethical Sourcing", 
@@ -18,7 +21,30 @@ const Process = () => {
       title: "Peak Aroma", 
       desc: "Vacuum-sealed at the height of freshness and delivered within 48 hours of roasting." 
     }
-  ];
+  ]);
+
+  // Focused BASE_URL update to fetch content from the sanctuary server
+  useEffect(() => {
+    const fetchProcessSteps = async () => {
+      try {
+        const response = await fetch(`${BASE_URL}/api/content/process-steps`);
+        if (response.ok) {
+          const data = await response.json();
+          // Mapping icons back to the Lucide components if data comes from DB
+          const iconMap = { Leaf: <Leaf size={24} />, Flame: <Flame size={24} />, Zap: <Zap size={24} /> };
+          const formattedData = data.map(step => ({
+            ...step,
+            icon: iconMap[step.iconName] || <Leaf size={24} />
+          }));
+          setSteps(formattedData);
+        }
+      } catch (error) {
+        console.error("Connection to sanctuary content failed, using defaults", error);
+      }
+    };
+
+    fetchProcessSteps();
+  }, []);
 
   return (
     <section id="process" className="relative bg-[#FDFCF8] dark:bg-velvet-bean py-32 px-6 overflow-hidden transition-colors duration-700">

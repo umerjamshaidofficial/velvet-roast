@@ -1,7 +1,10 @@
+import { BASE_URL } from './config'; // Centralized source for sanctuary server URL
+
 export const submitOrder = async (orderData) => {
   const token = localStorage.getItem('token'); 
   
-  const response = await fetch('http://localhost:5000/api/orders', {
+  // Updated to use dynamic BASE_URL and consistent endpoint
+  const response = await fetch(`${BASE_URL}/api/orders`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Coffee, User, LogOut, Package, CircleUser, 
+  Coffee, User, LogOut, Package, 
   ShoppingBag, Sun, Moon, Gift, Crown, Mail 
 } from 'lucide-react'; 
 import LoginModal from './LoginModal';
@@ -9,6 +9,7 @@ import MemberBadge from './MemberBadge';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
+import { BASE_URL } from '../api/config';
 
 const Navbar = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -52,7 +53,7 @@ const Navbar = () => {
     if (!token || !user) return;
 
     try {
-      const response = await fetch('http://localhost:5000/api/orders/notifications/list-detailed', {
+      const response = await fetch(`${BASE_URL}/api/orders/notifications/list-detailed`, {
         headers: { 
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -77,7 +78,7 @@ const Navbar = () => {
     if (!token || !user) return;
 
     try {
-      const response = await fetch('http://localhost:5000/api/orders/notifications/read-all', {
+      const response = await fetch(`${BASE_URL}/api/orders/notifications/read-all`, {
         method: 'PUT',
         headers: { 
           'Authorization': `Bearer ${token}`,
@@ -105,7 +106,7 @@ const Navbar = () => {
       if (!token) return;
 
       try {
-        const response = await fetch('http://localhost:5000/api/orders/notifications/unread', {
+        const response = await fetch(`${BASE_URL}/api/orders/notifications/unread`, {
           headers: { 
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
@@ -163,7 +164,7 @@ const Navbar = () => {
     }
   };
 
-  // Logic for manual login initials (e.g. Barike Dave -> BD)
+  // Logic for manual login initials
   const getInitials = () => {
     const first = user?.firstName || user?.first_name || "";
     const last = user?.lastName || user?.last_name || "";
@@ -173,7 +174,6 @@ const Navbar = () => {
     return user?.username?.substring(0, 2).toUpperCase() || "??";
   };
 
-  // Restore Full Name Display (e.g. Rabbia Jamshaid)
   const firstName = user?.firstName || user?.first_name || "";
   const lastName = user?.lastName || user?.last_name || "";
   const displayName = (firstName && lastName) ? `${firstName} ${lastName}` : (user?.username || "Guest");
@@ -336,9 +336,7 @@ const Navbar = () => {
                         className="w-full h-full object-cover"
                         referrerPolicy="no-referrer"
                         crossOrigin="anonymous"
-                        onError={(e) => {
-                          e.target.style.display = 'none';
-                        }}
+                        onError={(e) => { e.target.style.display = 'none'; }}
                       />
                     ) : (
                       <span className={`text-[10px] font-black font-inter ${isMember ? 'text-[#D4AF37]' : 'text-[#8C6A5E]'}`}>

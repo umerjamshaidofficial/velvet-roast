@@ -1,10 +1,8 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useAuth } from './AuthContext';
+import { BASE_URL } from '../api/config'; // Centralized source for sanctuary server URL
 
 const CartContext = createContext();
-
-// Use Environment Variable for the API URL
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 export const CartProvider = ({ children }) => {
   const auth = useAuth();
@@ -25,7 +23,7 @@ export const CartProvider = ({ children }) => {
     localStorage.setItem('velvet_cart', JSON.stringify(cart));
   }, [cart]);
 
-  // Stable gift fetching logic using the dynamic BASE_URL
+  // Stable gift fetching logic using the centralized BASE_URL
   const fetchGiftCount = useCallback(async () => {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -41,12 +39,13 @@ export const CartProvider = ({ children }) => {
         setGiftCount(data.count || 0);
       }
     } catch (err) {
-      console.error("Could not sync gift rituals:", err);
+      console.error("Could not sync gift rituals from sanctuary:", err);
     }
   }, []);
 
   useEffect(() => {
     fetchGiftCount();
+    // 2-minute interval sync preserved
     const interval = setInterval(fetchGiftCount, 120000);
     return () => clearInterval(interval);
   }, [fetchGiftCount]);
@@ -85,7 +84,6 @@ export const CartProvider = ({ children }) => {
         ...product,
         price: numericPrice,
         quantity: 1,
-        // Ensure image reference is consistent
         image: product.image || product.image_url 
       };
 
@@ -121,7 +119,7 @@ export const CartProvider = ({ children }) => {
     );
   };
 
-  // Final totals calculation
+  // Final totals calculation - Logic fully preserved
   const cartTotal = cart.reduce((acc, item) => {
     const price = typeof item.price === 'string' 
       ? parseFloat(item.price.replace('$', '')) 
@@ -149,7 +147,8 @@ export const CartProvider = ({ children }) => {
       logout,
       giftCount,
       fetchGiftCount,
-      isMember
+      isMember,
+      BASE_URL
     }}>
       {children}
     </CartContext.Provider>
