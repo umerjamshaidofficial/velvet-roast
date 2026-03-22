@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { MapPin, Edit3, Trash2, X, Globe, ArrowUpRight } from 'lucide-react';
-import { BASE_URL } from '../../api/config';
+import { BASE_URL } from '../api/config';
 
 const DestinationSection = ({ 
   addresses, 
