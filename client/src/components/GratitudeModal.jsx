@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Send, Sparkles, PenTool } from 'lucide-react';
-import { BASE_URL } from '../../api/config';
+import { BASE_URL } from '../api/config';
 
 const GratitudeModal = ({ isOpen, onClose, gift, onGratitudeSent }) => {
   const [message, setMessage] = useState('');
