@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Gift, Send } from 'lucide-react';
-import { BASE_URL } from '../../api/config';
+import { BASE_URL } from '../api/config';
 
 const GiftRitual = ({ showToast }) => {
     const [email, setEmail] = useState('');
